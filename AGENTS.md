@@ -4,15 +4,14 @@
 
 项目名称：解压星球。
 
-这是一个已部署在阿里云上的前后端分离 Web 应用。用户是专业运维工程师，默认具备 Linux、Nginx、Node.js、MySQL、Docker、systemd、前端构建和生产排障能力。回答要简洁、直接、工程化，优先给命令、文件路径、验证方法和风险点。
+这是一个已部署在阿里云上的前后端分离 Web 应用。用户是专业运维工程师，默认具备 Linux、Nginx、Node.js、MongoDB、systemd、前端构建和生产排障能力。回答要简洁、直接、工程化，优先给命令、文件路径、验证方法和风险点。
 
 ## 当前架构事实
 
 - 项目根目录：`/var/www/html`
 - 前端：React 18 + Vite 5 + React Router + Zustand + Tailwind CSS
-- 后端：Node.js + Express + mysql2
-- 数据库服务：Docker MySQL 8，容器 `stress-relief-mysql`，库名 `stress_relief_planet`
-- 后端数据访问：mysql2/promise
+- 后端：Node.js + Express + Mongoose
+- 数据库：MongoDB，库名 `stress-relief`
 - Web 入口：Nginx 80 端口
 - 后端服务：systemd `stress-relief-backend.service`
 - Nginx 静态根目录：`/var/www/html/frontend/dist`
@@ -27,7 +26,7 @@
 ├── AGENTS.md
 ├── frontend/        # React + Vite 前端工程，dist 为线上静态目录
 ├── backend/         # Express 后端工程，docs/api.md 为 API 文档
-├── database/        # MySQL 说明、初始化和迁移脚本
+├── database/        # 数据库说明、初始化和迁移脚本
 ├── docs/            # 项目级文档：架构、部署、运维约定
 ├── nginx/           # Nginx 配置参考副本，不是生效路径
 ├── scripts/         # 运维脚本
@@ -38,7 +37,6 @@
 
 - 不要臆测生产状态；涉及服务、端口、进程、配置时先用命令确认。
 - 简单只读任务可以直接执行。
-- 扫描项目时默认排除 `node_modules`、`.git`、`frontend/dist`、`backups`、`.local-sync-backups`、`.local-dev` 等目录；除非任务明确需要这些内容。
 - 涉及写文件、移动文件、改配置、重启服务、安装依赖、删除数据、数据库变更时，先说明计划、影响、回退和验证方式；用户明确确认后再执行。
 - 用户说“直接处理/直接改/执行”时，可执行低风险变更；涉及生产中断、数据风险、权限安全或不可逆操作时仍需再次确认。
 - 不要回显 `.env`、JWT secret、数据库连接串密码、Token、私钥等敏感值。
@@ -60,8 +58,7 @@
 ```bash
 cd /var/www/html
 find . -maxdepth 3 -path "*/node_modules" -prune -o -path "./backups" -prune -o -print | sort
-systemctl is-active stress-relief-backend nginx
-docker ps --format '{{.Names}} {{.Status}} {{.Ports}}' | rg 'stress-relief-mysql'
+systemctl is-active stress-relief-backend nginx mongod
 curl -fsS http://127.0.0.1/api/health
 curl -fsSI http://127.0.0.1/
 nginx -t
@@ -100,8 +97,8 @@ journalctl -u stress-relief-backend -n 100 --no-pager
 ## 数据库命令
 
 ```bash
-docker start stress-relief-mysql
-docker ps --format '{{.Names}} {{.Status}} {{.Ports}}' | rg 'stress-relief-mysql'
+systemctl status mongod --no-pager
+cd /var/www/html/backend && npm run seed
 ```
 
 执行 seed、迁移、删除或批量更新数据前必须说明影响范围和回退方案，并等待确认。
@@ -161,8 +158,7 @@ systemctl status stress-relief-backend --no-pager
 任何生产相关变更后，至少验证：
 
 ```bash
-systemctl is-active stress-relief-backend nginx
-docker ps --format '{{.Names}} {{.Status}} {{.Ports}}' | rg 'stress-relief-mysql'
+systemctl is-active stress-relief-backend nginx mongod
 curl -fsS http://127.0.0.1/api/health
 curl -fsSI http://127.0.0.1/
 ```

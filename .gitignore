@@ -31,6 +31,9 @@ pnpm-debug.log*
 # Local backups and production archives
 .local-sync-backups/
 backups/
+deploy/backups/
+*.archive
+*.gz
 
 # Runtime / cache
 .cache/

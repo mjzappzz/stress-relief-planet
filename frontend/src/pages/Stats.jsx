@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { FaMusic, FaPalette, FaRegCircle, FaRoute, FaWind } from "react-icons/fa";
 import useStore from "../store";
 
 export function Stats() {
@@ -46,39 +45,30 @@ export function Stats() {
   };
 
   const activityStats = stats?.filter(s => s.count > 0) || [];
-  const activityIcons = {
-    bubble: FaRegCircle,
-    maze: FaRoute,
-    coloring: FaPalette,
-    breathing: FaWind,
-    piano: FaMusic
-  };
-
-  const getActivityIcon = (type) => activityIcons[type] || FaRegCircle;
 
   return (
     <div className="container mx-auto px-4 py-16 animate-fade-in min-h-screen">
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center justify-between mb-10">
           <h1 className="text-4xl font-bold text-slate-800">我的记录</h1>
-          <Link to="/profile" className="text-blue-700 font-semibold hover:underline">
+          <Link to="/profile" className="text-violet-600 font-semibold hover:underline">
             返回个人资料
           </Link>
         </div>
 
         {/* Summary Cards */}
         <div className="grid md:grid-cols-3 gap-6 mb-10">
-          <div className="card border-blue-100 bg-blue-600 text-white">
+          <div className="card bg-gradient-to-br from-violet-500 to-indigo-600 text-white">
             <div className="text-4xl font-bold mb-2">{totalSessions}</div>
-            <div className="text-blue-100">总参与次数</div>
+            <div className="text-violet-100">总参与次数</div>
           </div>
           
-          <div className="card border-orange-100 bg-orange-500 text-white">
+          <div className="card bg-gradient-to-br from-cyan-500 to-blue-600 text-white">
             <div className="text-4xl font-bold mb-2">{formatDuration(totalDuration)}</div>
-            <div className="text-orange-50">总时长</div>
+            <div className="text-cyan-100">总时长</div>
           </div>
           
-          <div className="card border-emerald-100 bg-emerald-600 text-white">
+          <div className="card bg-gradient-to-br from-emerald-500 to-green-600 text-white">
             <div className="text-4xl font-bold mb-2">{activityStats.length}</div>
             <div className="text-emerald-100">体验类型</div>
           </div>
@@ -96,11 +86,11 @@ export function Stats() {
             <div className="space-y-4">
               {activityStats.map((stat) => (
                 <div key={stat.type} className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-orange-100 text-orange-800 rounded-xl flex items-center justify-center">
-                    {(() => {
-                      const Icon = getActivityIcon(stat.type);
-                      return <Icon aria-hidden="true" className="h-5 w-5" />;
-                    })()}
+                  <div className="w-12 h-12 bg-violet-100 rounded-xl flex items-center justify-center text-2xl">
+                    {stat.type === "bubble" ? "🫧" :
+                     stat.type === "maze" ? "🧩" :
+                     stat.type === "coloring" ? "🎨" :
+                     stat.type === "breathing" ? "🌬️" : "🎹"}
                   </div>
                   <div className="flex-1">
                     <div className="flex justify-between mb-1">
@@ -109,7 +99,7 @@ export function Stats() {
                     </div>
                     <div className="w-full bg-slate-100 rounded-full h-2">
                       <div 
-                        className="bg-blue-600 h-2 rounded-full"
+                        className="bg-gradient-to-r from-violet-500 to-cyan-500 h-2 rounded-full"
                         style={{ width: `${(stat.count / activityStats.reduce((max, s) => Math.max(max, s.count), 0)) * 100}%` }}
                       ></div>
                     </div>
@@ -133,13 +123,13 @@ export function Stats() {
           ) : (
             <div className="space-y-3">
               {progress.slice(0, 10).map((item) => (
-                <div key={item.id} className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
+                <div key={item._id} className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
                   <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 bg-white text-blue-700 rounded-lg flex items-center justify-center">
-                      {(() => {
-                        const Icon = getActivityIcon(item.activityType);
-                        return <Icon aria-hidden="true" className="h-4 w-4" />;
-                      })()}
+                    <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center text-xl">
+                      {item.activityType === "bubble" ? "🫧" :
+                       item.activityType === "maze" ? "🧩" :
+                       item.activityType === "coloring" ? "🎨" :
+                       item.activityType === "breathing" ? "🌬️" : "🎹"}
                     </div>
                     <div>
                       <div className="font-medium text-slate-800">
@@ -151,12 +141,10 @@ export function Stats() {
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="font-semibold text-blue-700">
+                    <div className="font-semibold text-violet-600">
                       {Math.floor(item.duration / 60)} 分钟
                     </div>
-                    {item.score > 0 && (
-                      <div className="text-sm text-slate-500">得分 {item.score}</div>
-                    )}
+                    <div className="text-sm text-slate-500">参与 {item.sessions || 1} 次</div>
                   </div>
                 </div>
               ))}

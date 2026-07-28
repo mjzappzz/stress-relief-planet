@@ -50,39 +50,35 @@ export function Login() {
         <div className="card">
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
-              <div role="alert" className="p-4 bg-rose-50 border border-rose-200 rounded-lg text-rose-700 text-sm">
+              <div className="p-4 bg-rose-50 border border-rose-200 rounded-lg text-rose-600 text-sm">
                 {error}
               </div>
             )}
 
             <div className="space-y-2">
-              <label htmlFor="login-username" className="block text-sm font-medium text-slate-700">
+              <label className="block text-sm font-medium text-slate-700">
                 用户名
               </label>
               <input
-                id="login-username"
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
-                autoComplete="username"
-                className="w-full min-h-11 px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all"
                 placeholder="请输入用户名"
               />
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="login-password" className="block text-sm font-medium text-slate-700">
+              <label className="block text-sm font-medium text-slate-700">
                 密码
               </label>
               <input
-                id="login-password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                autoComplete="current-password"
-                className="w-full min-h-11 px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all"
                 placeholder="请输入密码"
               />
             </div>
@@ -90,7 +86,7 @@ export function Login() {
             <button
               type="submit"
               disabled={isLoading}
-              className="btn-primary w-full"
+              className="w-full py-3 bg-gradient-to-r from-violet-600 to-cyan-600 text-white font-bold rounded-lg hover:from-violet-700 hover:to-cyan-700 transform hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? "登录中..." : "登录"}
             </button>
@@ -98,7 +94,7 @@ export function Login() {
 
           <div className="mt-6 text-center text-sm text-slate-600">
             还没有账号？{" "}
-            <Link to="/register" className="text-blue-700 font-semibold hover:text-blue-800">
+            <Link to="/register" className="text-violet-600 font-semibold hover:text-violet-700">
               立即注册
             </Link>
           </div>

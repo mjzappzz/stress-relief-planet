@@ -53,9 +53,8 @@ export function MazeGame() {
     if (isWin) {
       axios.post("/api/progress", {
         activityType: "maze",
-        duration: time,
-        score: level,
-        description: `完成第 ${level} 关迷宫`
+        duration: time * 60,
+        sessions: 1
       });
     }
   }, [isWin, time]);
@@ -143,15 +142,15 @@ export function MazeGame() {
         <h1 className="text-3xl font-bold mb-6 text-center">迷宫挑战</h1>
 
         <div className="flex items-center justify-between mb-6">
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="bg-white border border-slate-200 px-4 py-2 rounded-xl shadow-sm">
-              时间: <span className="text-blue-700 font-bold">{formatTime(time)}</span>
+          <div className="flex items-center gap-4">
+            <div className="bg-gray-800 px-4 py-2 rounded-lg">
+              时间: <span className="text-primary font-bold">{formatTime(time)}</span>
             </div>
-            <div className="bg-white border border-slate-200 px-4 py-2 rounded-xl shadow-sm">
-              关卡: <span className="text-orange-800 font-bold">{level}</span>
+            <div className="bg-gray-800 px-4 py-2 rounded-lg">
+              关卡: <span className="text-secondary font-bold">{level}</span>
             </div>
-            <div className="bg-white border border-slate-200 px-4 py-2 rounded-xl shadow-sm">
-              难度: <span className="text-orange-800 font-bold">{gridSize}x{gridSize}</span>
+            <div className="bg-gray-800 px-4 py-2 rounded-lg">
+              难度: <span className="text-secondary font-bold">{gridSize}x{gridSize}</span>
             </div>
           </div>
         </div>
@@ -194,19 +193,19 @@ export function MazeGame() {
         </div>
 
         {isWin && (
-          <div className="mt-6 p-6 bg-emerald-50 border border-emerald-200 rounded-xl text-center">
-            <h2 className="text-3xl font-bold text-emerald-800 mb-3">关卡完成</h2>
-            <p className="text-emerald-700 text-lg mb-4">用时: {formatTime(time)}</p>
+          <div className="mt-6 p-6 bg-green-500/20 border-2 border-green-500 rounded-lg text-center animate-bounce">
+            <h2 className="text-3xl font-bold text-green-400 mb-3">🎉 关卡完成！</h2>
+            <p className="text-green-300 text-lg mb-4">用时: {formatTime(time)}</p>
             <button
               onClick={handleNextLevel}
-              className="btn-primary px-8 py-3 text-lg"
+              className="px-8 py-3 bg-green-600 hover:bg-green-500 rounded-lg font-bold text-lg transition-all transform hover:scale-105 shadow-lg"
             >
-              下一关
+              下一关 →
             </button>
           </div>
         )}
 
-        <div className="mt-6 text-center text-slate-500 text-sm">
+        <div className="mt-6 text-center text-gray-400 text-sm">
           <p>使用方向键或 WASD 移动小人</p>
           <p>从左上角走到右下角绿色对钩处即可通关</p>
         </div>

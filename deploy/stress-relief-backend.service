@@ -1,0 +1,22 @@
+[Unit]
+Description=Stress Relief Backend API
+After=network-online.target mongod.service
+Wants=network-online.target
+Requires=mongod.service
+
+[Service]
+Type=simple
+User=stress-relief
+Group=stress-relief
+WorkingDirectory=/var/www/html/backend
+EnvironmentFile=/var/www/html/backend/.env
+ExecStart=/usr/bin/node /var/www/html/backend/server.js
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target

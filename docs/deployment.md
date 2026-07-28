@@ -1,174 +1,50 @@
-# 部署流程
+# 部署说明
 
-本文档记录生产发布步骤。生产路径默认为：
+## 安装器行为
 
-```text
-/var/www/html
+`deploy/install.sh` 按 `/etc/os-release` 自动选择：
+
+- Ubuntu：APT、NodeSource DEB、MongoDB APT、`sites-available`；
+- Rocky：DNF、NodeSource RPM、MongoDB RPM、`conf.d`、firewalld、SELinux。
+
+共同流程：
+
+1. 检查 root、系统版本、x86_64 和至少 2 GiB 可用空间；
+2. 安装 Node.js 22、MongoDB 8.0、Nginx、rsync；
+3. 创建 `stress-relief` 系统用户；
+4. 同步源码到 `/var/www/html`，保留现有 `.env`；
+5. 首次部署生成随机 JWT 密钥；
+6. `npm ci`、构建前端；
+7. 写入 systemd 和 Nginx 配置；
+8. 启动服务并验证 API 和首页。
+
+## 配置
+
+生产配置位于 `/var/www/html/backend/.env`。模板是 `backend/.env.example`：
+
+```dotenv
+NODE_ENV=production
+PORT=5000
+MONGODB_URI=mongodb://127.0.0.1:27017/stress-relief
+JWT_SECRET=replace-with-at-least-32-random-characters
+CORS_ORIGIN=http://127.0.0.1
+RATE_LIMIT_MAX=1000
 ```
 
-## 发布前检查
+不要把生产 `.env` 复制回仓库。
 
-```bash
-cd /var/www/html
-systemctl is-active stress-relief-backend nginx
-docker ps --format '{{.Names}} {{.Status}} {{.Ports}}' | rg 'stress-relief-mysql'
-curl -fsS http://127.0.0.1/api/health
-curl -fsSI http://127.0.0.1/
-```
+## 更新和回滚
 
-## 备份
+`deploy/update.sh` 在 `/var/backups/stress-relief/pre-update-时间戳/` 保存应用文件和 MongoDB 归档，再安装依赖、构建和重启。任一步失败会恢复旧应用文件。数据库升级或 schema 变更不应隐含在普通更新中，需独立制定迁移与回滚。
 
-生产写操作前创建备份目录：
+## 执行边界
 
-```bash
-mkdir -p /var/www/html/backups/<change-name>-$(date +%Y%m%d-%H%M%S)
-```
+- 安装脚本会安装系统软件、写入 Nginx/systemd、调整 Rocky firewalld/SELinux。
+- 默认占用 80、5000、27017；仅 80 对外开放。
+- 不自动配置域名、DNS、TLS、云安全组或 MongoDB公网访问。
+- 已存在的非本项目 `/var/www/html` 不应直接部署；先人工迁移或修改部署设计。
+- 卸载和恢复属于破坏性操作，必须通过显式环境变量确认。
 
-至少备份本次要修改的文件。不要删除 `backups/`。
+## 受限网络和离线环境
 
-## 前端发布
-
-影响范围：
-
-```text
-/var/www/html/frontend/src
-/var/www/html/frontend/dist
-Nginx 静态文件
-```
-
-命令：
-
-```bash
-cd /var/www/html/frontend
-npm install
-npm run build
-nginx -t && systemctl reload nginx
-```
-
-验证：
-
-```bash
-curl -fsSI http://127.0.0.1/
-curl -fsS http://127.0.0.1/api/health
-```
-
-回退：
-
-```text
-恢复备份的 frontend/dist 或重新构建上一版本
-nginx -t && systemctl reload nginx
-```
-
-## 后端发布
-
-影响范围：
-
-```text
-/var/www/html/backend
-systemd stress-relief-backend.service
-```
-
-命令：
-
-```bash
-cd /var/www/html/backend
-npm install
-node -c server.js
-systemctl restart stress-relief-backend
-journalctl -u stress-relief-backend -n 50 --no-pager
-```
-
-验证：
-
-```bash
-systemctl is-active stress-relief-backend
-curl -fsS http://127.0.0.1/api/health
-```
-
-回退：
-
-```text
-恢复备份的 backend 文件
-node -c /var/www/html/backend/server.js
-systemctl restart stress-relief-backend
-curl -fsS http://127.0.0.1/api/health
-```
-
-## Nginx 配置发布
-
-生效配置：
-
-```text
-/etc/nginx/conf.d/stress-relief.conf
-/etc/nginx/sites-enabled/default
-```
-
-项目内 `nginx/` 仅为参考副本。
-
-命令：
-
-```bash
-nginx -t
-systemctl reload nginx
-```
-
-验证：
-
-```bash
-curl -fsSI http://127.0.0.1/
-curl -fsS http://127.0.0.1/api/health
-```
-
-## 数据库变更
-
-数据库变更包括：
-
-```text
-schema 初始化
-迁移
-seed
-删除数据
-批量更新
-```
-
-执行前必须：
-
-```text
-1. 明确目标库和影响表
-2. 备份数据库
-3. 准备回滚 SQL 或恢复方案
-4. 在测试环境验证
-```
-
-当前数据库：
-
-```text
-Docker 容器：stress-relief-mysql
-库名：stress_relief_planet
-```
-
-验证：
-
-```bash
-docker ps --format '{{.Names}} {{.Status}} {{.Ports}}' | rg 'stress-relief-mysql'
-curl -fsS http://127.0.0.1/api/health
-```
-
-## 发布后统一验证
-
-```bash
-systemctl is-active stress-relief-backend nginx
-docker ps --format '{{.Names}} {{.Status}} {{.Ports}}' | rg 'stress-relief-mysql'
-curl -fsS http://127.0.0.1/api/health
-curl -fsSI http://127.0.0.1/
-```
-
-预期：
-
-```text
-stress-relief-backend: active
-nginx: active
-stress-relief-mysql: Up/healthy
-/api/health: JSON status=ok
-/: HTTP 200
-```
+当前脚本需要访问 GitHub、NodeSource、MongoDB 官方仓库及发行版软件源。离线环境应先建立内部镜像源，并把安装脚本中的仓库地址替换为组织镜像；不要通过关闭 GPG 校验绕过源验证。

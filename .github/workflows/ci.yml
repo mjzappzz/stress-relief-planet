@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: |
+            backend/package-lock.json
+            frontend/package-lock.json
+      - name: Install backend
+        run: npm ci --prefix backend
+      - name: Install frontend
+        run: npm ci --prefix frontend
+      - name: Check backend syntax
+        run: find backend -name '*.js' -print0 | xargs -0 -n1 node --check
+      - name: Audit backend runtime dependencies
+        run: npm audit --omit=dev --audit-level=high --prefix backend
+      - name: Build frontend
+        run: npm run build --prefix frontend
+      - name: Check shell scripts
+        run: find deploy -name '*.sh' -print0 | xargs -0 -n1 bash -n

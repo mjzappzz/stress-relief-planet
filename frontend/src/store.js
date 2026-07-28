@@ -20,10 +20,6 @@ const useStore = create((set, get) => ({
     localStorage.removeItem("token");
     set({ user: null, token: null });
   },
-  logout: () => {
-    localStorage.removeItem("token");
-    set({ user: null, token: null });
-  },
   setActivities: (activities) => set({ activities }),
   setStressLevel: (level) => set({ stressLevel: level }),
   setStats: (stats) => set({ stats })
