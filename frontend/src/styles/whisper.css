@@ -1,0 +1,42 @@
+.whisper-page { position: relative; min-height: calc(100vh - 5rem); overflow: hidden; isolation: isolate; display: grid; place-items: center; color: #e7e5ed; background: radial-gradient(ellipse at 50% 38%, #28304766, transparent 58%), radial-gradient(ellipse at 85% 95%, #46334333, transparent 55%), linear-gradient(165deg, #101725, #1a2233 65%, #171e2c); }
+.whisper-field { position: absolute; inset: 0; z-index: -1; width: 100%; height: 100%; transition: opacity 700ms ease; }
+.whisper-writing .whisper-field { opacity: .28; }
+.whisper-releasing .whisper-field { opacity: .8; }
+.whisper-brand { position: absolute; top: 28px; left: 32px; color: #a8b0c3; font-size: 13px; letter-spacing: .2em; }
+.whisper-content { width: min(520px, calc(100% - 40px)); text-align: center; z-index: 1; }
+.whisper-welcome, .whisper-receipt { animation: whisper-arrive 650ms cubic-bezier(.22,.8,.28,1) both; }
+.whisper-kicker { margin: 0 0 28px; color: #c7b79e; font-size: 12px; letter-spacing: .25em; }
+.whisper-welcome h1, .whisper-receipt h1 { margin: 0; font-size: clamp(24px, 4vw, 32px); font-weight: 450; letter-spacing: .08em; }
+.whisper-welcome p:not(.whisper-kicker), .whisper-receipt p { margin: 20px 0 36px; color: #aeb5c7; font-size: 13px; line-height: 1.8; }
+.whisper-primary { display: inline-flex; align-items: center; justify-content: center; gap: 22px; min-width: 206px; min-height: 54px; padding: 0 24px; border: 1px solid #e2d3bb38; border-radius: 999px; background: linear-gradient(180deg, #e7dac3, #d4c4ac); color: #34313b; cursor: pointer; box-shadow: 0 8px 28px #00000026, inset 0 1px 0 #ffffff60; transition: transform 250ms ease, box-shadow 300ms ease; }
+.whisper-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 34px #d9c5a320; }
+.whisper-primary:active { transform: scale(.96); }
+.whisper-primary:disabled { opacity: .48; cursor: default; transform: none; }
+.whisper-primary:focus-visible, .whisper-quiet:focus-visible, .whisper-layout-switch button:focus-visible, .whisper-appearance summary:focus-visible { outline: 2px solid #c7b798; outline-offset: 4px; }
+.whisper-form { padding: 24px; border: 1px solid #b7bfd624; border-radius: 24px; background: #1c2435f2; box-shadow: 0 16px 48px #00000018; text-align: left; animation: whisper-arrive 650ms cubic-bezier(.22,.8,.28,1) both; }
+.whisper-form label { color: #b7bfd1; font-size: 13px; letter-spacing: .08em; }
+.whisper-form textarea { display: block; width: 100%; min-height: 160px; margin-top: 16px; padding: 8px 0; border: 0; resize: vertical; background: transparent; color: #e6e5ee; font: inherit; font-size: 16px; line-height: 1.9; }
+.whisper-form textarea::placeholder { color: #9ea9bd; }
+.whisper-form textarea:focus-visible { outline: 2px solid #8d9bb8; outline-offset: 6px; }
+.whisper-meta, .whisper-privacy { color: #9ea9bd; font-size: 11px; }
+.whisper-meta { display: flex; justify-content: space-between; margin: 8px 0 20px; }
+.whisper-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.whisper-quiet { min-height: 44px; padding: 8px 0; border: 0; background: transparent; color: #b7bfd1; cursor: pointer; }
+.whisper-quiet:hover { color: #f0dfc3; }
+.whisper-receipt > span { display: block; margin-bottom: 16px; color: #d4c09d; font-size: 32px; }
+.whisper-receipt h1:focus { outline: none; }
+.whisper-privacy { margin: 28px 0 0; }
+.whisper-controls { position: absolute; bottom: 32px; left: 50%; display: flex; flex-direction: column; align-items: center; gap: 12px; transform: translateX(-50%); color: #9ea9bd; font-size: 11px; white-space: nowrap; }
+.whisper-layout-switch { display: flex; width: 216px; padding: 4px; gap: 4px; border-radius: 12px; background: #141c2caa; border: 1px solid #ffffff12; }
+.whisper-layout-switch button { flex: 1; min-height: 40px; border: 0; border-radius: 9px; color: #aeb8cb; background: transparent; cursor: pointer; font-size: 12px; }
+.whisper-layout-switch button[aria-pressed="true"] { background: #354057; color: #f1e3cd; }
+.whisper-appearance { position: absolute; top: 20px; right: 28px; z-index: 2; }
+.whisper-appearance summary { padding: 12px 16px; border: 1px solid #ffffff10; border-radius: 24px; background: #ffffff08; color: #b6bdcd; cursor: pointer; font-size: 12px; list-style: none; }
+.whisper-appearance summary::-webkit-details-marker { display: none; }
+.whisper-appearance > div { width: 250px; margin-top: 10px; padding: 16px; border: 1px solid #b7bfd624; border-radius: 16px; background: #1e2739; }
+.whisper-appearance label { display: flex; justify-content: space-between; color: #b7bfd1; font-size: 12px; }
+.whisper-appearance input { width: 100%; margin: 12px 0; accent-color: #c7b798; }
+.whisper-appearance button { display: block; margin: auto; border: 0; background: transparent; color: #b7bfd1; cursor: pointer; font-size: 12px; }
+@keyframes whisper-arrive { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 600px) { .whisper-page { min-height: calc(100vh - 4rem); } .whisper-brand { top: 20px; left: 20px; } .whisper-appearance { top: 12px; right: 16px; } .whisper-controls { bottom: 20px; } .whisper-form { padding: 20px; } }
+@media (prefers-reduced-motion: reduce) { .whisper-page *, .whisper-page *::before, .whisper-page *::after { animation: none !important; transition: none !important; } }

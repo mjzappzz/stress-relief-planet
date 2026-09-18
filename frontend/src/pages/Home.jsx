@@ -41,6 +41,14 @@ export function Home() {
       icon: "琴键",
       color: "from-emerald-400 to-green-600",
       path: "/piano"
+    },
+    {
+      id: 6,
+      title: "悄悄话树洞",
+      description: "写下一点心事，先放在这里",
+      icon: "✧",
+      color: "from-slate-700 to-indigo-950",
+      path: "/whisper"
     }
   ];
 
@@ -80,7 +88,7 @@ export function Home() {
               选择你的解压方式
             </h2>
             <p className="text-lg text-slate-600">
-              5种精心设计的解压活动，总有一款适合你
+              6种精心设计的解压活动，总有一款适合你
             </p>
           </div>
 
