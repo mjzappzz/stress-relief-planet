@@ -139,6 +139,7 @@ nginx/          线上历史参考配置
 
 - [架构说明](docs/architecture.md)
 - [部署说明](docs/deployment.md)
+- [当前线上部署记录](docs/current-deployment.md)
 - [运维手册](docs/runbook.md)
 - [API 文档](backend/docs/api.md)
 
