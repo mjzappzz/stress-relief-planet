@@ -8,9 +8,8 @@
 
 - Git 仓库：`stress-relief-planet`
 - 远端：`git@github.com:mjzappzz/stress-relief-planet.git`
-- 当前本地工作区外层目录：`/home/tjzs/projects/aliyun-front`
-- 当前仓库目录：`/home/tjzs/projects/aliyun-front/stress-relief-planet`
-- 外层目录名目前仍是 `aliyun-front`，没有改名为 `stress-relief-planet`。
+- 当前本地项目根目录：`/home/tjzs/projects/stress-relief-planet`
+- 外层旧目录与内层 Git 仓库已合并为一个项目根目录。
 
 ## 阿里云线上环境
 
